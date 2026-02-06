@@ -24,7 +24,15 @@ def get_or_load_model(model_id: str):
     if model_id not in _model_cache:
         config = MODEL_CONFIGS[model_id]
         model = get_model(model_id, config)
-        model.load_model()
+        try:
+            model.load_model()
+        except RuntimeError as e:
+            if "GPU" in str(e) or "CUDA" in str(e):
+                # GPU not available, mark as unavailable
+                model.is_loaded = False
+                print(f"⚠️ {model_id} requires GPU: {e}")
+            else:
+                raise
         _model_cache[model_id] = model
     
     _current_model_id = model_id
@@ -166,24 +174,32 @@ def create_interface():
         # 🚀 Unified OCR Platform
         
         **Compare and use multiple state-of-the-art Vision-Language OCR models:**
-        - **DeepSeek-OCR-2**: Document to markdown with layout detection
+        - **DeepSeek-OCR-2**: Document to markdown with layout detection  
         - **GLM-OCR**: Specialized recognition for text, formulas, and tables  
         - **PaddleOCR-VL-1.5**: Full-page document parsing with layout detection
         
         Select a model below to get started!
         """)
         
-        # Model selection
+        # Status notice
+        gr.Markdown("""
+        > ⚠️ **Current Deployment Status:**
+        > - 🚀 **DeepSeek-OCR-2**: Requires GPU - temporarily unavailable on this CPU-only deployment
+        > - 🔮 **GLM-OCR**: Available ✅
+        > - 📄 **PaddleOCR-VL-1.5**: Available ✅ (requires API key)
+        """)
+        
+        # Model selection - default to GLM-OCR (index 1) since DeepSeek requires GPU
         with gr.Row():
             model_selector = gr.Dropdown(
                 choices=[(MODEL_DISPLAY_NAMES[m], m) for m in AVAILABLE_MODELS],
-                value=AVAILABLE_MODELS[0],
+                value=AVAILABLE_MODELS[1],  # Default to GLM-OCR
                 label="Select OCR Model",
                 scale=1
             )
         
         # Model description
-        model_desc = gr.Markdown(MODEL_CONFIGS[AVAILABLE_MODELS[0]]['description'])
+        model_desc = gr.Markdown(MODEL_CONFIGS[AVAILABLE_MODELS[1]]['description'])
         
         with gr.Row():
             # Left column - inputs

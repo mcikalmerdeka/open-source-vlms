@@ -89,6 +89,15 @@ class DeepSeekOCRModel(BaseOCRModel):
                     trust_remote_code=True,
                     use_safetensors=True
                 )
+            
+            # Check if CUDA is available
+            if not torch.cuda.is_available():
+                raise RuntimeError(
+                    "DeepSeek-OCR-2 requires GPU acceleration. "
+                    "This model cannot run on CPU-only deployment. "
+                    "Please upgrade to a GPU-enabled Hugging Face Space plan."
+                )
+            
             self.model = self.model.eval().cuda()
             self.is_loaded = True
     
@@ -100,6 +109,10 @@ class DeepSeekOCRModel(BaseOCRModel):
         """Process image with DeepSeek-OCR-2"""
         if image is None:
             return {"error": "No image provided"}
+        
+        # Check if model is loaded (GPU check happens in load_model)
+        if not self.is_loaded:
+            return {"error": "DeepSeek-OCR-2 requires GPU acceleration and is not available on this CPU-only deployment. Please upgrade to a GPU-enabled Hugging Face Space plan."}
         
         if task in ["✏️ Custom", "📍 Locate"] and not custom_prompt.strip():
             return {"error": "Please enter a prompt"}

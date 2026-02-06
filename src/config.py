@@ -21,7 +21,7 @@ MODEL_CONFIGS = {
     "deepseek-ocr-2": {
         "name": "DeepSeek-OCR-2",
         "repo_id": "deepseek-ai/DeepSeek-OCR-2",
-        "description": "Convert documents to markdown, extract text, parse figures, and locate specific content with bounding boxes.",
+        "description": "**⚠️ GPU REQUIRED - Currently Unavailable**\n\nConvert documents to markdown, extract text, parse figures, and locate specific content with bounding boxes.\n\n*Note: This model requires GPU acceleration and is temporarily disabled on CPU-only deployment.*",
         "supports_pdf": True,
         "supports_grounding": True,
         "tasks": {
