@@ -160,7 +160,7 @@ def create_interface():
             if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
                 examples.append(os.path.join(examples_dir, f))
     
-    with gr.Blocks(title="Unified OCR Platform", theme=gr.themes.Soft()) as demo:
+    with gr.Blocks(title="Unified OCR Platform") as demo:
         gr.Markdown("""
         # 🚀 Unified OCR Platform
         
@@ -253,8 +253,7 @@ def create_interface():
                     with gr.Tab("📝 Text"):
                         text_output = gr.Textbox(
                             label="Extracted Text",
-                            lines=20,
-                            show_copy_button=True
+                            lines=20
                         )
                     
                     with gr.Tab("📄 Markdown"):
@@ -273,8 +272,7 @@ def create_interface():
                     with gr.Tab("🔧 Raw"):
                         raw_output = gr.Textbox(
                             label="Raw Output",
-                            lines=20,
-                            show_copy_button=True
+                            lines=20
                         )
         
         # Info section
