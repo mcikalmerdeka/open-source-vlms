@@ -223,8 +223,8 @@ def create_interface():
                     visible=False
                 )
                 
-                # Task selector - initialize with first model's tasks
-                initial_tasks = list(MODEL_CONFIGS[AVAILABLE_MODELS[0]]['tasks'].values())
+                # Task selector - initialize with PaddleOCR's tasks (index 2, same as model_selector default)
+                initial_tasks = list(MODEL_CONFIGS[AVAILABLE_MODELS[2]]['tasks'].values())
                 task_selector = gr.Dropdown(
                     label="Task",
                     choices=initial_tasks,
