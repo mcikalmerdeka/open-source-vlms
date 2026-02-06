@@ -10,8 +10,8 @@ wheels/
 .venv
 
 # References
-# references/
-data/
+references/
+goverment_docs/
 other/
 
 # Environment variables
