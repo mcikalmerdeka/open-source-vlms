@@ -171,7 +171,7 @@ def create_interface():
     
     with gr.Blocks(title="Unified OCR Platform") as demo:
         gr.Markdown("""
-        # 🚀 Unified OCR Platform
+        # 🔍 VLMs OCR Playground
         
         **Compare and use multiple state-of-the-art Vision-Language OCR models:**
         - **DeepSeek-OCR-2**: Document to markdown with layout detection  
