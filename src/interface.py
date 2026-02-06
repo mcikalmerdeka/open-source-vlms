@@ -68,10 +68,11 @@ def update_model_selection(model_id):
     # Get task options from config (no need to load model)
     tasks = list(config.get('tasks', {}).values())
     
+    # Reset task to first option of new model
     return [
-        gr.update(choices=tasks, value=tasks[0] if tasks else None),
-        gr.update(visible=pdf_visible),
-        gr.update(visible=pdf_visible),
+        gr.Dropdown(choices=tasks, value=tasks[0] if tasks else None, interactive=True),
+        gr.Number(visible=pdf_visible),
+        gr.File(visible=pdf_visible),
         desc
     ]
 
@@ -206,11 +207,12 @@ def create_interface():
                     visible=False
                 )
                 
-                # Task selector
+                # Task selector - initialize with first model's tasks
+                initial_tasks = list(MODEL_CONFIGS[AVAILABLE_MODELS[0]]['tasks'].values())
                 task_selector = gr.Dropdown(
                     label="Task",
-                    choices=[],
-                    value=None
+                    choices=initial_tasks,
+                    value=initial_tasks[0] if initial_tasks else None
                 )
                 
                 # Custom prompt (for DeepSeek)
