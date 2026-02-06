@@ -189,17 +189,17 @@ def create_interface():
         > - 📄 **PaddleOCR-VL-1.5**: Available ✅ (requires API key)
         """)
         
-        # Model selection - default to GLM-OCR (index 1) since DeepSeek requires GPU
+        # Model selection - default to PaddleOCR-VL-1.5 (index 2)
         with gr.Row():
             model_selector = gr.Dropdown(
                 choices=[(MODEL_DISPLAY_NAMES[m], m) for m in AVAILABLE_MODELS],
-                value=AVAILABLE_MODELS[1],  # Default to GLM-OCR
+                value=AVAILABLE_MODELS[2],  # Default to PaddleOCR-VL-1.5
                 label="Select OCR Model",
                 scale=1
             )
         
         # Model description
-        model_desc = gr.Markdown(MODEL_CONFIGS[AVAILABLE_MODELS[1]]['description'])
+        model_desc = gr.Markdown(MODEL_CONFIGS[AVAILABLE_MODELS[2]]['description'])
         
         with gr.Row():
             # Left column - inputs
