@@ -10,4 +10,6 @@ wheels/
 .venv
 
 # References
-DeepSeek-OCR-Demo/
+references/
+data/
+other/

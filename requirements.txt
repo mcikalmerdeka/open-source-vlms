@@ -1,0 +1,35 @@
+# Core dependencies
+gradio>=6.5.1
+gradio_client
+spaces
+torch>=2.5.0
+torchvision
+transformers>=4.45.0
+tokenizers>=0.21.0
+accelerate>=0.34.0
+einops
+addict
+easydict
+sentencepiece
+
+# Flash Attention - Linux only, install manually if needed
+# flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+# PDF processing
+PyMuPDF
+
+# Image processing
+Pillow
+opencv-python
+matplotlib
+
+# Other utilities
+requests
+markdown
+huggingface_hub
+hf_transfer
+hf_xet
+av
+
+# Git dependencies removed - using stable versions above
+# For GLM-OCR, stable transformers should work
