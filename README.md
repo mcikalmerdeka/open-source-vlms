@@ -2,13 +2,13 @@
 title: VLMs OCR Playground
 emoji: 🔍
 colorFrom: blue
-colorTo: brown
+colorTo: indigo
 sdk: gradio
 sdk_version: 6.5.1
 app_file: main.py
 pinned: false
 license: mit
-short_description: Compare and use multiple state-of-the-art Vision-Language OCR models
+short_description: Compare SOTA VLMs OCR models
 tags:
   - vision-language-models
   - ocr
