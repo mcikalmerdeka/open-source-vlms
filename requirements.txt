@@ -1,18 +1,21 @@
 # Core dependencies
-gradio>=6.5.1
-gradio_client
-spaces
-torch>=2.5.0
+# Note: Using specific versions for DeepSeek-OCR-2 compatibility
+torch==2.6.0
 torchvision
-transformers>=4.45.0
-tokenizers>=0.21.0
-accelerate>=0.34.0
+transformers==4.46.3
+tokenizers==0.20.3
+accelerate
 einops
 addict
 easydict
 sentencepiece
 
-# Flash Attention - Linux only, install manually if needed
+# Gradio - UI framework
+gradio>=6.5.1
+gradio_client
+spaces
+
+# Flash Attention - Optional, will fallback to eager attention if not available
 # flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 
 # PDF processing
@@ -30,6 +33,3 @@ huggingface_hub
 hf_transfer
 hf_xet
 av
-
-# Git dependencies removed - using stable versions above
-# For GLM-OCR, stable transformers should work

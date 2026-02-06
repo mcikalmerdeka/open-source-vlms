@@ -52,6 +52,19 @@ class DeepSeekOCRModel(BaseOCRModel):
             import spaces as _spaces
             spaces = _spaces
         
+        # Workaround for missing LlamaFlashAttention2 in newer transformers
+        # This patches the import before loading the model
+        try:
+            from transformers.models.llama import modeling_llama
+            if not hasattr(modeling_llama, 'LlamaFlashAttention2'):
+                # Create a dummy class to prevent import error
+                class LlamaFlashAttention2:
+                    pass
+                modeling_llama.LlamaFlashAttention2 = LlamaFlashAttention2
+                modeling_llama.LLAMA_ATTENTION_CLASSES["flash_attention_2"] = LlamaFlashAttention2
+        except Exception:
+            pass  # If patching fails, we'll handle it in the model loading
+        
         from transformers import AutoModel, AutoTokenizer
         
         if not self.is_loaded:
