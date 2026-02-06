@@ -1,4 +1,21 @@
-# Unified OCR Platform
+---
+title: VLMs OCR Playground
+emoji: 🔍
+colorFrom: blue
+colorTo: brown
+sdk: gradio
+sdk_version: 6.5.1
+app_file: main.py
+pinned: false
+license: mit
+short_description: Compare and use multiple state-of-the-art Vision-Language OCR models
+tags:
+  - vision-language-models
+  - ocr
+  - open-source
+---
+
+# VLMs OCR Playground
 
 A unified Gradio-based platform for comparing and using multiple state-of-the-art Vision-Language OCR models. Deploy easily to Hugging Face Spaces.
 
@@ -85,6 +102,7 @@ See `src/models/base.py` for the interface.
 ### Dependency Conflicts
 
 If you see errors about `tokenizers` or `transformers` version conflicts:
+
 - The requirements.txt uses flexible version ranges to avoid conflicts
 - Remove `uv.lock` or `poetry.lock` if present and reinstall
 - Use `pip install -r requirements.txt --force-reinstall` if needed
@@ -96,6 +114,7 @@ The models will automatically fall back to standard attention if flash-attn is n
 ### Out of Memory
 
 If you run out of GPU memory:
+
 - Run on CPU (slower but works): The models will automatically use CPU if GPU is not available
 - Process smaller images
 - Use one model at a time
