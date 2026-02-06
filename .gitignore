@@ -13,3 +13,6 @@ wheels/
 references/
 data/
 other/
+
+# Environment variables
+.env

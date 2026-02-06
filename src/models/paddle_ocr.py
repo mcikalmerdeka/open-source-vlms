@@ -34,8 +34,9 @@ class PaddleOCRModel(BaseOCRModel):
     
     def __init__(self, model_id: str, config: Dict[str, Any]):
         super().__init__(model_id, config)
-        self.api_url = os.environ.get("PADDLEOCR_API_URL")
-        self.token = os.environ.get("PADDLEOCR_TOKEN")
+        # Try multiple env var names for flexibility
+        self.api_url = os.environ.get("API_URL") or os.environ.get("PADDLEOCR_API_URL")
+        self.token = os.environ.get("TOKEN") or os.environ.get("PADDLEOCR_TOKEN")
         
     def load_model(self):
         """PaddleOCR uses API, no model loading needed"""
@@ -50,7 +51,7 @@ class PaddleOCRModel(BaseOCRModel):
         return list(self.ELEMENT_OPTIONS.keys())
     
     def _file_to_b64(self, path_or_url: str) -> Tuple[str, int]:
-        """Convert file to base64"""
+        """Convert file to base64 and return file type (0=PDF, 1=image)"""
         is_url = isinstance(path_or_url, str) and path_or_url.startswith(("http://", "https://"))
         
         if is_url:
@@ -63,7 +64,10 @@ class PaddleOCRModel(BaseOCRModel):
             with open(path_or_url, "rb") as f:
                 content = f.read()
         
-        return base64.b64encode(content).decode("utf-8"), 1
+        # File type: 0 for PDF, 1 for images
+        file_type = 0 if ext == '.pdf' else 1
+        
+        return base64.b64encode(content).decode("utf-8"), file_type
     
     def _call_api(self, path_or_url: str, task_type: str, element_type: str = None,
                   use_chart: bool = False, use_unwarp: bool = True, 
@@ -71,38 +75,34 @@ class PaddleOCRModel(BaseOCRModel):
         """Call PaddleOCR API"""
         
         if not self.api_url:
-            return {"error": "PaddleOCR API URL not configured"}
+            return {"error": "PaddleOCR API URL not configured. Please set API_URL in your environment variables or Hugging Face Space secrets."}
         
-        is_url = isinstance(path_or_url, str) and path_or_url.startswith(("http://", "https://"))
+        if not self.token:
+            return {"error": "PaddleOCR API token not configured. Please set TOKEN in your environment variables or Hugging Face Space secrets."}
         
-        if is_url:
-            payload = {
-                "file": path_or_url,
-                "useLayoutDetection": task_type == "document_parsing",
-                "useDocUnwarping": use_unwarp,
-                "useDocOrientationClassify": use_orient
-            }
-        else:
-            b64, file_type = self._file_to_b64(path_or_url)
-            payload = {
-                "file": b64,
-                "useLayoutDetection": task_type == "document_parsing",
-                "fileType": file_type,
-                "useDocUnwarping": use_unwarp,
-                "useDocOrientationClassify": use_orient
-            }
+        # Always convert to base64 (API expects base64 encoded file)
+        b64, file_type = self._file_to_b64(path_or_url)
         
-        if task_type != "document_parsing" and element_type:
-            payload["promptLabel"] = element_type
+        # Build payload according to API specification
+        payload = {
+            "file": b64,
+            "fileType": file_type,  # 0=PDF, 1=image
+            "useDocOrientationClassify": use_orient,
+            "useDocUnwarping": use_unwarp,
+            "useChartRecognition": use_chart if task_type == "document_parsing" else False
+        }
+        
+        # For element recognition, disable document-level features
+        if task_type != "document_parsing":
             payload["useDocUnwarping"] = False
             payload["useDocOrientationClassify"] = False
+            if element_type:
+                payload["promptLabel"] = element_type
         
-        if task_type == "document_parsing" and use_chart:
-            payload["useChartRecognition"] = True
-        
-        headers = {"Content-Type": "application/json"}
-        if self.token:
-            headers["Authorization"] = f"bearer {self.token}"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"token {self.token}"  # Note: lowercase "token" as per API spec
+        }
         
         try:
             resp = requests.post(self.api_url, json=payload, headers=headers, timeout=600)
@@ -112,7 +112,8 @@ class PaddleOCRModel(BaseOCRModel):
             return {"error": f"API request failed: {str(e)}"}
         
         if data.get("errorCode", -1) != 0:
-            return {"error": "API returned an error"}
+            error_msg = data.get("errorMsg", "Unknown error")
+            return {"error": f"API returned an error: {error_msg}"}
         
         return data
     
