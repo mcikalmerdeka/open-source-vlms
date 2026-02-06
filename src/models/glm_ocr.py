@@ -40,17 +40,26 @@ class GLMOCRModel(BaseOCRModel):
         from transformers import AutoProcessor, AutoModelForImageTextToText
         
         if not self.is_loaded:
-            self.processor = AutoProcessor.from_pretrained(
-                self.config['repo_id'],
-                trust_remote_code=True
-            )
-            self.model = AutoModelForImageTextToText.from_pretrained(
-                pretrained_model_name_or_path=self.config['repo_id'],
-                torch_dtype=torch.bfloat16,
-                device_map="auto",
-                trust_remote_code=True
-            )
-            self.is_loaded = True
+            try:
+                self.processor = AutoProcessor.from_pretrained(
+                    self.config['repo_id'],
+                    trust_remote_code=True
+                )
+                self.model = AutoModelForImageTextToText.from_pretrained(
+                    pretrained_model_name_or_path=self.config['repo_id'],
+                    torch_dtype=torch.bfloat16,
+                    device_map="auto",
+                    trust_remote_code=True
+                )
+                self.is_loaded = True
+            except ValueError as e:
+                if "Unrecognized processing class" in str(e):
+                    raise RuntimeError(
+                        "GLM-OCR requires git version of transformers. "
+                        "Please ensure transformers is installed from: "
+                        "git+https://github.com/huggingface/transformers.git"
+                    ) from e
+                raise
     
     def get_task_options(self) -> List[str]:
         """Get available task options"""

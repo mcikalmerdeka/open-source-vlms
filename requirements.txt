@@ -1,14 +1,19 @@
 # Core dependencies
-# Note: Using specific versions for DeepSeek-OCR-2 compatibility
 torch==2.6.0
 torchvision
-transformers==4.46.3
-tokenizers==0.20.3
+sentencepiece
+
+# Git versions required for GLM-OCR and some models
+# These are needed for AutoProcessor support
+git+https://github.com/huggingface/transformers.git
+git+https://github.com/huggingface/accelerate.git
+git+https://github.com/huggingface/peft.git
+
+# Other dependencies
 accelerate
 einops
 addict
 easydict
-sentencepiece
 
 # Gradio - UI framework
 gradio>=6.5.1
